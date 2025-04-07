@@ -16,7 +16,7 @@ app.use(express.urlencoded({extended: true}));
 
 // Fixed CORS configuration to allow credentials from frontend
 app.use(cors({
-    origin: ['http://localhost:5173', 'https://medcarefrontend.netlify.app/'], 
+    origin: ['http://localhost:5173', 'https://medcarefrontend.netlify.app'], 
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"]
