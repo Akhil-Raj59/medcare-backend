@@ -16,11 +16,12 @@ export const chatWithGroq = async (req, res) => {
 
     console.log("🧠 Sending medical request to Groq API:", message);
 
-    // Using the model that works with your account
+    
     const response = await axios.post(
       GROQ_API_URL,
       { 
-        model: "llama3-8b-8192", // Using the model that was working before
+        model: "llama-3.1-8b-instant",
+
         messages: [
           { 
             role: "system", 
@@ -64,7 +65,7 @@ export const analyzeImageBase64 = async (req, res) => {
     const response = await axios.post(
       GROQ_API_URL,
       {
-        model: "llama-3.2-11b-vision-preview", // Using the vision model that was working before
+        model: "meta-llama/llama-4-scout-17b-16e-instruct",   // Using the vision model that was working before
         messages: [
           {
             role: "user",
