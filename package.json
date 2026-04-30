@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/tarun-torque/Ai-powered-medical-App-Backend#readme",
   "dependencies": {
+    "@getbrevo/brevo": "^3.0.1",
     "axios": "^1.8.4",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
@@ -31,7 +32,9 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "form-data": "^4.0.5",
     "jsonwebtoken": "^9.0.2",
+    "mailgun.js": "^12.4.1",
     "mongoose": "^8.11.0",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",

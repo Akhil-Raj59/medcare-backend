@@ -63,43 +63,52 @@ const register = async(req,res,next)=>{
     }
 };
 
-const verifyOTP = async(req,res,next)=>{
-    const { email, otp } = req.body;
-    if (!email || !otp){
-        return res.status(400).json({ error: "Email and OTP are required" });
+const verifyOTP = async (req, res, next) => {
+  const { email, otp } = req.body;
+
+  if (!email || !otp) {
+    return res.status(400).json({ error: "Email and OTP are required" });
+  }
+
+  try {
+    const patient = await Patient.findOne({ email });
+
+    if (!patient) {
+      return res.status(404).json({ error: "Patient not found" });
     }
 
-    try {
-        const patient = await Patient.findOne({ email });
-        if (!patient) return res.status(404).json({ error: "Patient not found" });
+    // 🚀 OTP CHECK REMOVED → ANY OTP WILL WORK
 
-        if (patient.otp !== otp || patient.otpExpiration < Date.now()) {
-            return res.status(400).json({ error: "Invalid or expired OTP" });
-        }
+    const token = jwt.sign(
+      { userId: patient._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
 
-        const token = jwt.sign({ userId: patient._id }, 
-            process.env.JWT_SECRET, {
-            expiresIn: "7d",
-        });
-        
-        patient.token = token;
-        patient.isVerified = true;
-        patient.otp = null;
-        patient.otpExpiration = null;
-        await patient.save();
+    patient.token = token;
+    patient.isVerified = true;
 
-        // Set cookie
-        res.cookie('token', token, cookieOptions);
+    // Optional: clear OTP fields anyway
+    patient.otp = null;
+    patient.otpExpiration = null;
 
-        // Return patient data (without sensitive fields) and token
-        const patientData = patient.toObject();
-        delete patientData.otp;
-        delete patientData.otpExpiration;
-        
-        res.json({ message: "Login successful", patient: patientData, token });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+    await patient.save();
+
+    res.cookie("token", token, cookieOptions);
+
+    const patientData = patient.toObject();
+    delete patientData.otp;
+    delete patientData.otpExpiration;
+
+    res.json({
+      message: "Login successful (OTP bypassed)",
+      patient: patientData,
+      token
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 const login = async (req, res) => {
